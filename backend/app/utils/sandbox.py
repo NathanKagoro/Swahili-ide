@@ -101,6 +101,7 @@ _SAFE_BUILTINS = (
     "str",
     "sum",
     "tuple",
+    "type",
 )
 
 _BLOCKED_NAMES = (
@@ -122,7 +123,6 @@ _BLOCKED_NAMES = (
     "open",
     "setattr",
     "super",
-    "type",
     "vars",
 )
 
