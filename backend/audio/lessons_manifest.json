@@ -1,0 +1,290 @@
+{
+  "generated_at_epoch": 1777306798,
+  "lessons_count": 20,
+  "languages": [
+    "en",
+    "sw"
+  ],
+  "files": {
+    "utangulizi": {
+      "en": {
+        "filename": "lesson-01_utangulizi_en.wav",
+        "cache_hash": "f705ddcd611faff7da3be5324e0c6b37028e0c092439426b2029a500a031a174",
+        "bytes": 2126796,
+        "relative_path": "audio/lesson-01_utangulizi_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-01_utangulizi_sw.wav",
+        "cache_hash": "c48585139bd299c72d701742a66a038ebd85094db5a7e13082be83c71f2be758",
+        "bytes": 2192332,
+        "relative_path": "audio/lesson-01_utangulizi_sw.wav"
+      }
+    },
+    "sintaksia": {
+      "en": {
+        "filename": "lesson-02_sintaksia_en.wav",
+        "cache_hash": "a54a8690f40d4fbad5ccfba8dd99504410595a350028e8a52e49f130a892c300",
+        "bytes": 2089304,
+        "relative_path": "audio/lesson-02_sintaksia_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-02_sintaksia_sw.wav",
+        "cache_hash": "9ce7a77090cf84bf1860313c969c954ca325cd2a9008f14bedca625656f668d4",
+        "bytes": 1947992,
+        "relative_path": "audio/lesson-02_sintaksia_sw.wav"
+      }
+    },
+    "maoni": {
+      "en": {
+        "filename": "lesson-03_maoni_en.wav",
+        "cache_hash": "f5dba3313959cfe61df1c53d090a4a60b479c76b86a7b49e92de0ed4c233005a",
+        "bytes": 1812428,
+        "relative_path": "audio/lesson-03_maoni_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-03_maoni_sw.wav",
+        "cache_hash": "6900b5fd395977bcc49c9db1678a39d5bbf11d82a7afbcb28daf58830d9a2f45",
+        "bytes": 1765324,
+        "relative_path": "audio/lesson-03_maoni_sw.wav"
+      }
+    },
+    "vigezo": {
+      "en": {
+        "filename": "lesson-04_vigezo_en.wav",
+        "cache_hash": "684e30b2f28b64f69900430e0516c2cbd4f1042225f27676a0d185f1b53dc08e",
+        "bytes": 1898840,
+        "relative_path": "audio/lesson-04_vigezo_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-04_vigezo_sw.wav",
+        "cache_hash": "9fccf113f777293bc6da110e3c29a0df0647f8c5fe8d9c60707b8dc96b4633d4",
+        "bytes": 1780056,
+        "relative_path": "audio/lesson-04_vigezo_sw.wav"
+      }
+    },
+    "aina-za-data": {
+      "en": {
+        "filename": "lesson-05_aina-za-data_en.wav",
+        "cache_hash": "096ef13845be040f8431c56c3553bafcde69eea1a4271bb858bc326546c2922c",
+        "bytes": 2069336,
+        "relative_path": "audio/lesson-05_aina-za-data_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-05_aina-za-data_sw.wav",
+        "cache_hash": "aa3a0b10792ca8c3ed55aa89081ac1517b48d4f709cc3a77281f29ddda3dd577",
+        "bytes": 1942360,
+        "relative_path": "audio/lesson-05_aina-za-data_sw.wav"
+      }
+    },
+    "namba": {
+      "en": {
+        "filename": "lesson-06_namba_en.wav",
+        "cache_hash": "67daf5c52117e0e6b1eda6a3a7f42419ba5e9e70000acd08ab355982d1d2459d",
+        "bytes": 1849176,
+        "relative_path": "audio/lesson-06_namba_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-06_namba_sw.wav",
+        "cache_hash": "9ea80083906a54cf581bc39aeadad2dc818d743a4da41c6f37ec172daa56a1a0",
+        "bytes": 1763160,
+        "relative_path": "audio/lesson-06_namba_sw.wav"
+      }
+    },
+    "ubadilishaji-aina": {
+      "en": {
+        "filename": "lesson-07_ubadilishaji-aina_en.wav",
+        "cache_hash": "75e84d6dcaf0704dfdeaa0bfbd515e05098ebca0156bc33661ebc31bff74d443",
+        "bytes": 2060120,
+        "relative_path": "audio/lesson-07_ubadilishaji-aina_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-07_ubadilishaji-aina_sw.wav",
+        "cache_hash": "95797ac7ae54e378f6ae0fa69f3fbeaee53a15cb5af22f3943a59aabbd1193f7",
+        "bytes": 2102616,
+        "relative_path": "audio/lesson-07_ubadilishaji-aina_sw.wav"
+      }
+    },
+    "maandishi": {
+      "en": {
+        "filename": "lesson-08_maandishi_en.wav",
+        "cache_hash": "9282ed5814e8de547bd16e7dda305cbc31845bafc8699a1166a20a632eacad9d",
+        "bytes": 1790296,
+        "relative_path": "audio/lesson-08_maandishi_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-08_maandishi_sw.wav",
+        "cache_hash": "0141a669af336f37a04e34fa314126c438a18fac66eb01be69cd08b7ec19552b",
+        "bytes": 1719640,
+        "relative_path": "audio/lesson-08_maandishi_sw.wav"
+      }
+    },
+    "kweli-na-sikweli": {
+      "en": {
+        "filename": "lesson-09_kweli-na-sikweli_en.wav",
+        "cache_hash": "3c808dbc0210424d23af6211fd27f7c0074a58a9ce0ee5b9e8895e9794796de0",
+        "bytes": 1762136,
+        "relative_path": "audio/lesson-09_kweli-na-sikweli_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-09_kweli-na-sikweli_sw.wav",
+        "cache_hash": "efab04363d670a3e6faf59f06f110302815ea69fa78269c87456025368649227",
+        "bytes": 1844568,
+        "relative_path": "audio/lesson-09_kweli-na-sikweli_sw.wav"
+      }
+    },
+    "waendeshaji": {
+      "en": {
+        "filename": "lesson-10_waendeshaji_en.wav",
+        "cache_hash": "d6be87238de40d42290fcfee5954cd13f80c7fe4fd7fcbb55415afb2781f046b",
+        "bytes": 1871192,
+        "relative_path": "audio/lesson-10_waendeshaji_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-10_waendeshaji_sw.wav",
+        "cache_hash": "eb145a0108b32c68e6b0f552a83c9553e86f729a5aef3e1c2d1de3d9048de90a",
+        "bytes": 2011480,
+        "relative_path": "audio/lesson-10_waendeshaji_sw.wav"
+      }
+    },
+    "orodha": {
+      "en": {
+        "filename": "lesson-11_orodha_en.wav",
+        "cache_hash": "b40b7261db7b551714785c823bb8b096314a8d43ae6e6ad817262b05a03a09ba",
+        "bytes": 1865560,
+        "relative_path": "audio/lesson-11_orodha_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-11_orodha_sw.wav",
+        "cache_hash": "623561d131c259fe2d7c467d5e2ccaf1754f9bf6ee2e364217def54cb021f506",
+        "bytes": 2015576,
+        "relative_path": "audio/lesson-11_orodha_sw.wav"
+      }
+    },
+    "tuple": {
+      "en": {
+        "filename": "lesson-12_tuple_en.wav",
+        "cache_hash": "c2dc2736ca999fa38395a1f8ac48459144dc00b5426aaecc507a5939c50df283",
+        "bytes": 2009432,
+        "relative_path": "audio/lesson-12_tuple_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-12_tuple_sw.wav",
+        "cache_hash": "7a0a30e052b44bf435086961d675ab9d584d1995fd9e26978d438a1dd60cc1f3",
+        "bytes": 1943896,
+        "relative_path": "audio/lesson-12_tuple_sw.wav"
+      }
+    },
+    "seti": {
+      "en": {
+        "filename": "lesson-13_seti_en.wav",
+        "cache_hash": "64d6876ff72148f69d3af8b612b816265960e13795600b3a2ffb599f91daedf2",
+        "bytes": 1859416,
+        "relative_path": "audio/lesson-13_seti_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-13_seti_sw.wav",
+        "cache_hash": "4cc21b910860f4d787778bd75ea13c7e11b61942498c712fd2a24e3333ccb1e8",
+        "bytes": 1907032,
+        "relative_path": "audio/lesson-13_seti_sw.wav"
+      }
+    },
+    "kamusi": {
+      "en": {
+        "filename": "lesson-14_kamusi_en.wav",
+        "cache_hash": "35f808e40d49c9f231f952925eae757e13a902e2032d9f482627f808c2bfd8ec",
+        "bytes": 1906008,
+        "relative_path": "audio/lesson-14_kamusi_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-14_kamusi_sw.wav",
+        "cache_hash": "cf5a8329d14b110f00145eedc134d7011a4d562132f14879dc1086e961f3567f",
+        "bytes": 1989464,
+        "relative_path": "audio/lesson-14_kamusi_sw.wav"
+      }
+    },
+    "masharti-kama-zaidi": {
+      "en": {
+        "filename": "lesson-15_masharti-kama-zaidi_en.wav",
+        "cache_hash": "42cdfa73fd40d9e65ece9321cfdafdf4050ce4ae04844ea7ea5c80618a134b94",
+        "bytes": 1783128,
+        "relative_path": "audio/lesson-15_masharti-kama-zaidi_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-15_masharti-kama-zaidi_sw.wav",
+        "cache_hash": "1af58d86259ad3975a333a822390445d90f151d5f1a277561a1f92b0f19dc578",
+        "bytes": 1883992,
+        "relative_path": "audio/lesson-15_masharti-kama-zaidi_sw.wav"
+      }
+    },
+    "marudio-wakati": {
+      "en": {
+        "filename": "lesson-16_marudio-wakati_en.wav",
+        "cache_hash": "693c14f91a3932d42140c4dbee19de48ec03bfd9d3d89ba9082c5a565ac8a2b4",
+        "bytes": 1767768,
+        "relative_path": "audio/lesson-16_marudio-wakati_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-16_marudio-wakati_sw.wav",
+        "cache_hash": "bf140b4245f06e4575198b9720d33994cb4b5ea18a7b6af1b1762b7457b46471",
+        "bytes": 2036056,
+        "relative_path": "audio/lesson-16_marudio-wakati_sw.wav"
+      }
+    },
+    "marudio-ikiwa": {
+      "en": {
+        "filename": "lesson-17_marudio-ikiwa_en.wav",
+        "cache_hash": "c85e05c0f86bf87b6a84e3cb14e432683e0e76e53ec62d9ec378b30e1ac2a5ec",
+        "bytes": 1888600,
+        "relative_path": "audio/lesson-17_marudio-ikiwa_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-17_marudio-ikiwa_sw.wav",
+        "cache_hash": "8c72046160c364e37b12abf2a57187a09984efadaec381c1e53470e09e08522d",
+        "bytes": 2009432,
+        "relative_path": "audio/lesson-17_marudio-ikiwa_sw.wav"
+      }
+    },
+    "njia": {
+      "en": {
+        "filename": "lesson-18_njia_en.wav",
+        "cache_hash": "5a924f0772d9f5784bc8a97adfab2a96bbbcb4a96d0c6694ac91ff21c31dedf2",
+        "bytes": 1934680,
+        "relative_path": "audio/lesson-18_njia_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-18_njia_sw.wav",
+        "cache_hash": "89d1306eff6d30bc52627a08fc1d2913afdbc13e923db5092c8f1dfb716dcb25",
+        "bytes": 1880920,
+        "relative_path": "audio/lesson-18_njia_sw.wav"
+      }
+    },
+    "jaribu-ila": {
+      "en": {
+        "filename": "lesson-19_jaribu-ila_en.wav",
+        "cache_hash": "ba246a49f7f642eb78b49e5db8aea5e27b805200c079ffc07526efe9af818d40",
+        "bytes": 1900888,
+        "relative_path": "audio/lesson-19_jaribu-ila_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-19_jaribu-ila_sw.wav",
+        "cache_hash": "29790cb5973b16fe7806d32623b6815ebe3773bab09f7726cac4f02f3d749978",
+        "bytes": 1823064,
+        "relative_path": "audio/lesson-19_jaribu-ila_sw.wav"
+      }
+    },
+    "kazi-za-msingi": {
+      "en": {
+        "filename": "lesson-20_kazi-za-msingi_en.wav",
+        "cache_hash": "532a0abe7ed43d50d45fe742f2ff4a1020aa49ed9c43eafd026391042965e768",
+        "bytes": 2378072,
+        "relative_path": "audio/lesson-20_kazi-za-msingi_en.wav"
+      },
+      "sw": {
+        "filename": "lesson-20_kazi-za-msingi_sw.wav",
+        "cache_hash": "882485684886469aa71de8f28c66830c81abce0c50ffc76bda66cf7b794d88d0",
+        "bytes": 2222424,
+        "relative_path": "audio/lesson-20_kazi-za-msingi_sw.wav"
+      }
+    }
+  }
+}
