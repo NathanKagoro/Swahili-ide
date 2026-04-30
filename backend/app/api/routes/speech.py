@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter, File, Form, UploadFile
 from fastapi import HTTPException, status
 
 from app.models.request_models import (
@@ -14,9 +14,12 @@ router = APIRouter()
 
 
 @router.post("/transcribe", response_model=SpeechToTextResponse)
-async def transcribe(file: UploadFile = File(...)) -> SpeechToTextResponse:
+async def transcribe(
+    file: UploadFile = File(...),
+    lang: str | None = Form(default=None),
+) -> SpeechToTextResponse:
     try:
-        text = await transcribe_audio(file)
+        text = await transcribe_audio(file, lang)
         return SpeechToTextResponse(text=text)
     except ValueError as exc:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(exc)) from exc

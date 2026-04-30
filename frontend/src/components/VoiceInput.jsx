@@ -11,7 +11,7 @@ export default function VoiceInput({ onTranscribed, transcript, language = 'sw' 
     startRecording,
     stopRecordingAndTranscribe,
     transcribing,
-  } = useVoice(onTranscribed)
+  } = useVoice(onTranscribed, language)
 
   const isSwahili = language === 'sw'
 

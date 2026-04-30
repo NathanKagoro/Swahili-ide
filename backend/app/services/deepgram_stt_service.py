@@ -24,7 +24,11 @@ def _extract_transcript(response: Any) -> str:
     return str(alternatives[0].get("transcript", "")).strip()
 
 
-def transcribe_audio_bytes_with_deepgram(raw_audio: bytes, content_type: str | None = None) -> str:
+def transcribe_audio_bytes_with_deepgram(
+    raw_audio: bytes,
+    content_type: str | None = None,
+    language: str | None = None,
+) -> str:
     if not settings.deepgram_api_key:
         raise RuntimeError("DEEPGRAM_API_KEY haijawekwa kwenye backend/.env.")
 
@@ -41,7 +45,7 @@ def transcribe_audio_bytes_with_deepgram(raw_audio: bytes, content_type: str | N
         }
         options = PrerecordedOptions(
             model=settings.deepgram_model,
-            language=settings.deepgram_language or None,
+            language=language or settings.deepgram_language or None,
             punctuate=True,
             smart_format=True,
         )

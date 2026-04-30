@@ -12,7 +12,7 @@ function extensionFromMimeType(mimeType = '') {
 }
 
 // Manage microphone capture lifecycle and send captured audio to backend STT.
-export function useVoice(onTranscribed) {
+export function useVoice(onTranscribed, language = 'sw') {
   const [recording, setRecording] = useState(false)
   const [transcribing, setTranscribing] = useState(false)
   const [error, setError] = useState('')
@@ -134,7 +134,7 @@ export function useVoice(onTranscribed) {
       }
 
       const audioFile = new File([audioBlob], `voice.${extension}`, { type: mimeType })
-      const result = await transcribeAudio(audioFile)
+      const result = await transcribeAudio(audioFile, language)
       const text = (result?.text || '').trim()
       if (!text) {
         setError('Hakuna maneno yaliyotambuliwa. Ongea karibu na kipaza sauti na ujaribu tena.')

@@ -43,9 +43,10 @@ export async function updateProgress(token, completedLessons) {
   return data
 }
 
-export async function transcribeAudio(file) {
+export async function transcribeAudio(file, lang = 'sw') {
   const formData = new FormData()
   formData.append('file', file)
+  formData.append('lang', lang)
   const { data } = await api.post('/transcribe', formData)
   return data
 }

@@ -61,6 +61,35 @@ class STTServiceTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(text, "jambo")
 
+    async def test_transcribe_audio_passes_language_to_deepgram(self) -> None:
+        upload = UploadFile(filename="voice.webm", file=io.BytesIO(b"fake-audio"))
+        previous_provider = settings.stt_provider
+
+        try:
+            settings.stt_provider = "deepgram"
+            with patch("app.services.stt_service.transcribe_audio_bytes_with_deepgram", return_value="jambo") as mock_deepgram:
+                await transcribe_audio(upload, "sw")
+        finally:
+            settings.stt_provider = previous_provider
+
+        args = mock_deepgram.call_args[0]
+        self.assertEqual(args[2], "sw")
+
+    async def test_transcribe_audio_passes_language_to_whisper(self) -> None:
+        upload = UploadFile(filename="voice.webm", file=io.BytesIO(b"fake-audio"))
+        previous_provider = settings.stt_provider
+
+        try:
+            settings.stt_provider = "whisper"
+            with patch("app.services.stt_service._transcribe_file", return_value="habari") as mock_transcribe_file:
+                with patch("app.services.stt_service.load_whisper_model", return_value=object()):
+                    await transcribe_audio(upload, "en")
+        finally:
+            settings.stt_provider = previous_provider
+
+        args = mock_transcribe_file.call_args[0]
+        self.assertEqual(args[2], "en")
+
     async def test_transcribe_audio_rejects_unknown_provider(self) -> None:
         upload = UploadFile(filename="voice.webm", file=io.BytesIO(b"fake-audio"))
         previous_provider = settings.stt_provider
