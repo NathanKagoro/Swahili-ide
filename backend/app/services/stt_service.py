@@ -7,6 +7,7 @@ from fastapi import UploadFile
 
 from app.core.settings import settings
 from app.core.whisper_loader import load_whisper_model
+from app.services.deepgram_stt_service import transcribe_audio_bytes_with_deepgram
 
 _ALLOWED_AUDIO_EXTENSIONS = {".wav", ".mp3", ".m4a", ".ogg", ".flac", ".webm"}
 
@@ -36,11 +37,11 @@ def _transcribe_file(path: str, model: Any) -> str:
     return ""
 
 
-async def transcribe_audio(file: UploadFile) -> str:
-    raw = await file.read()
-    if not raw:
-        raise ValueError("Hakuna sauti iliyotumwa.")
+def _normalize_stt_provider(value: str) -> str:
+    return value.strip().lower()
 
+
+def _transcribe_with_whisper(raw: bytes, file: UploadFile) -> str:
     suffix = _extract_extension(file)
     temp_path = ""
 
@@ -55,9 +56,26 @@ async def transcribe_audio(file: UploadFile) -> str:
             raise RuntimeError(f"Imeshindikana kupakia modeli ya Whisper: {exc}") from exc
 
         text = _transcribe_file(temp_path, model)
-        if not text:
-            return ""
-        return text[: settings.max_input_chars]
+        return text
     finally:
         if temp_path and os.path.exists(temp_path):
             os.unlink(temp_path)
+
+
+async def transcribe_audio(file: UploadFile) -> str:
+    raw = await file.read()
+    if not raw:
+        raise ValueError("Hakuna sauti iliyotumwa.")
+
+    provider = _normalize_stt_provider(settings.stt_provider)
+    if provider == "deepgram":
+        text = transcribe_audio_bytes_with_deepgram(raw, file.content_type)
+    elif provider == "whisper":
+        text = _transcribe_with_whisper(raw, file)
+    else:
+        raise RuntimeError(f"STT provider haijatambuliwa: {settings.stt_provider}")
+
+    text = text.strip()
+    if not text:
+        return ""
+    return text[: settings.max_input_chars]

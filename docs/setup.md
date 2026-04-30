@@ -38,6 +38,21 @@ To run higher-quality local/offline text-to-speech:
 
 Generated speech files are cached under `backend/audio`.
 
+## STT Provider Selection
+
+Speech-to-text can run on Whisper (local) or Deepgram (cloud).
+
+Set in `backend/.env`:
+
+- `STT_PROVIDER=whisper` (default local model)
+- `STT_PROVIDER=deepgram` (uses Deepgram API)
+
+For Deepgram also set:
+
+- `DEEPGRAM_API_KEY=<your-api-key>`
+- `DEEPGRAM_MODEL=nova-3`
+- `DEEPGRAM_LANGUAGE=sw`
+
 ## Pre-Generate Lesson Audio
 
 From repo root:

@@ -22,7 +22,7 @@ Swahili Voice IDE is a web-based coding environment for learning and practicing 
 ## Runtime Components
 
 - Code execution: `pyswahili` conversion + restricted Python sandbox
-- STT: Whisper model selected via `WHISPER_MODEL`
+- STT: Whisper (default) or Deepgram via `STT_PROVIDER`
 - TTS: Piper (`TTS_PROVIDER=piper`)
 - LLM: OpenRouter or Ollama (`LLM_PROVIDER`)
 

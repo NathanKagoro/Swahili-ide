@@ -25,7 +25,11 @@ class Settings(BaseSettings):
     openrouter_app_name: str = "Swahili Voice IDE"
     openrouter_site_url: str = ""
 
+    stt_provider: str = "whisper"
     whisper_model: str = "small"
+    deepgram_api_key: str = ""
+    deepgram_model: str = "nova-3"
+    deepgram_language: str = "sw"
     tts_provider: str = "piper"
     tts_voice: str = "sw"
     piper_executable_path: str = ""

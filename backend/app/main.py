@@ -34,6 +34,7 @@ def _log_startup() -> None:
     )
     logger.info('=' * 60)
     logger.info('  Swahili Voice IDE Backend  v0.1.0')
+    logger.info('  STT provider : %s', settings.stt_provider)
     logger.info('  TTS provider : %s  (configured=%s)', settings.tts_provider, settings.tts_provider)
     logger.info('  TTS active   : %s', tts_status)
     logger.info('  Frontend URL : %s', settings.frontend_origin)

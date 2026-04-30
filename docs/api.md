@@ -25,6 +25,11 @@ Response body:
 - `POST /transcribe` (multipart form-data, file field name: `file`)
 - `POST /speak`
 
+`/transcribe` uses the backend-selected provider from `STT_PROVIDER`:
+
+- `whisper` for local transcription
+- `deepgram` for Deepgram API transcription
+
 Request body for `/speak`:
 ```json
 { "text": "Karibu darasani", "lang": "sw" }
