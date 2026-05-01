@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar'
 import Editor from '../components/Editor'
 import Console from '../components/Console'
 import VoiceInput from '../components/VoiceInput'
+import VoiceTutorPanel from '../components/VoiceTutorPanel'
 import {
   explainCode,
   fetchChatHistory,
@@ -1122,11 +1123,17 @@ export default function IDE({
                         </div>
 
                         {showVoiceTools ? (
-                          <VoiceInput
-                            onTranscribed={setVoiceTranscript}
-                            transcript={voiceTranscript}
-                            language={language}
-                          />
+                          <>
+                            <VoiceInput
+                              onTranscribed={setVoiceTranscript}
+                              transcript={voiceTranscript}
+                              language={language}
+                            />
+                            <VoiceTutorPanel
+                              language={language}
+                              chatContext={assistantMessages}
+                            />
+                          </>
                         ) : null}
 
                         <div className="assistant-thread" aria-live="polite">

@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     deepgram_api_key: str = ""
     deepgram_model: str = "nova-3"
     deepgram_language: str = "sw"
+    deepgram_agent_enabled: bool = False
+    deepgram_agent_listen_model: str = "nova-3"
+    deepgram_agent_think_model: str = "gpt-4o-mini"
+    deepgram_agent_speak_model: str = "aura-2-thalia-en"
+    deepgram_agent_greeting: str = "Hi, I am Amina. How can I help with your Python or Pyswahili code today?"
     tts_provider: str = "piper"
     tts_voice: str = "sw"
     piper_executable_path: str = ""

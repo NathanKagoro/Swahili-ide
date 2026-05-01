@@ -51,6 +51,11 @@ export async function transcribeAudio(file, lang = 'sw') {
   return data
 }
 
+export async function fetchVoiceTutorConfig() {
+  const { data } = await api.get('/voice/tutor/config')
+  return data
+}
+
 export async function speakText(text, lang = 'sw', lessonId = null) {
   const { data } = await api.post('/speak', {
     text,

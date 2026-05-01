@@ -7,6 +7,7 @@ from app.api.routes.auth import router as auth_router
 from app.api.routes.llm import router as llm_router
 from app.api.routes.speech import router as speech_router
 from app.api.routes.swahili import router as swahili_router
+from app.api.routes.voice_tutor import router as voice_tutor_router
 from app.core.settings import settings
 from app.db.database import init_database
 
@@ -53,6 +54,7 @@ app.include_router(swahili_router, prefix="/api", tags=["swahili"])
 app.include_router(auth_router, prefix="/api", tags=["auth"])
 app.include_router(speech_router, prefix="/api", tags=["speech"])
 app.include_router(llm_router, prefix="/api", tags=["llm"])
+app.include_router(voice_tutor_router, prefix="/api", tags=["voice-tutor"])
 
 
 @app.get("/health")
