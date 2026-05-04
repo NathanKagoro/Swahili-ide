@@ -60,7 +60,7 @@ body {
   align-items: center;
   justify-content: flex-end;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .nav-lang-toggle {
@@ -85,11 +85,14 @@ body {
 }
 
 .nav-portfolio-link {
+  display: inline-flex;
+  align-items: center;
   text-decoration: none;
   color: #d95d39;
   font-weight: 600;
   font-size: 0.95rem;
   padding: 0.5rem 0.75rem;
+  min-height: 36px;
   border-radius: 6px;
   transition: all 0.2s ease;
 }
@@ -364,9 +367,10 @@ body {
 }
 
 .nav-account-shell {
-  display: grid;
-  gap: 0.35rem;
-  justify-items: end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
 }
 
 .nav-account-logged-in,
@@ -374,7 +378,7 @@ body {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-end;
 }
 
@@ -507,10 +511,13 @@ body {
 }
 
 .account-switches button {
+  display: inline-flex;
+  align-items: center;
   border: 1px solid #d3c2a9;
   background: #fff;
   border-radius: 999px;
   padding: 0.45rem 0.75rem;
+  min-height: 36px;
   cursor: pointer;
 }
 

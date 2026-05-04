@@ -696,14 +696,6 @@ export const lessonExplanations = {
 
 export const practiceTests = [
   {
-    id: 't1',
-    promptEn: 'FizzBuzz: Print numbers 1 to 15. For multiples of 3 print Fizz, for multiples of 5 print Buzz, and for both print FizzBuzz.',
-    promptSw: 'FizzBuzz: Chapisha namba 1 hadi 15. Kwa zinazogawanyika kwa 3 chapisha Fizz, kwa 5 chapisha Buzz, na kwa zote mbili chapisha FizzBuzz.',
-    starterEn: '# TODO: loop from 1 to 15 and apply FizzBuzz rules\n',
-    starterSw: '# TODO: pitia 1 hadi 15 na tumia sheria za FizzBuzz\n',
-    expectedOutput: '1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n',
-  },
-  {
     id: 't2',
     promptEn: 'Sum List: Given nums = [1, 2, 3, 4, 5], print the total sum.',
     promptSw: 'Jumla ya Orodha: Ukipewa nums = [1, 2, 3, 4, 5], chapisha jumla yake.',
@@ -726,5 +718,13 @@ export const practiceTests = [
     starterEn: '# TODO: find and print the largest number\nnums = [3, 1, 9, 4]\n',
     starterSw: '# TODO: tafuta na uchapishe namba kubwa zaidi\nnums = [3, 1, 9, 4]\n',
     expectedOutput: '9\n',
+  },
+  {
+    id: 't1',
+    promptEn: 'FizzBuzz: Print numbers 1 to 15. For multiples of 3 print Fizz, for multiples of 5 print Buzz, and for both print FizzBuzz.',
+    promptSw: 'FizzBuzz: Chapisha namba 1 hadi 15. Kwa zinazogawanyika kwa 3 chapisha Fizz, kwa 5 chapisha Buzz, na kwa zote mbili chapisha FizzBuzz.',
+    starterEn: '# TODO: loop from 1 to 15 and apply FizzBuzz rules\n',
+    starterSw: '# TODO: pitia 1 hadi 15 na tumia sheria za FizzBuzz\n',
+    expectedOutput: '1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n',
   },
 ]

@@ -1,8 +1,6 @@
 export default function Navbar({
-  mode,
   language,
   onSetLanguage,
-  onSwitchBasic,
   onSwitchLearn,
   onSwitchTests,
   isLoggedIn,
@@ -65,10 +63,6 @@ export default function Navbar({
           {authError ? <p className="nav-status fail-msg">{authError}</p> : null}
           {authMessage ? <p className="nav-status pass-msg">{authMessage}</p> : null}
         </div>
-
-        <button onClick={onSwitchBasic} className="run-btn">
-          {mode === 'basic' ? (language === 'sw' ? 'Nenda Masomoni' : 'Go to Lessons') : language === 'sw' ? 'Nenda IDE' : 'Go to IDE'}
-        </button>
       </div>
     </header>
   )
