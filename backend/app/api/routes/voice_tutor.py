@@ -115,6 +115,11 @@ async def voice_tutor_ws(websocket: WebSocket) -> None:
         return
 
     language = str(start_payload.get("language") or "en")[:8]
+    try:
+        input_sample_rate = int(start_payload.get("input_sample_rate") or 24000)
+    except (TypeError, ValueError):
+        input_sample_rate = 24000
+    input_sample_rate = max(8000, min(48000, input_sample_rate))
     chat_context = start_payload.get("chat_context") or []
     if not isinstance(chat_context, list):
         chat_context = []
@@ -174,7 +179,7 @@ async def voice_tutor_ws(websocket: WebSocket) -> None:
             audio=AgentV1SettingsAudio(
                 input=AgentV1SettingsAudioInput(
                     encoding="linear16",
-                    sample_rate=24000,
+                    sample_rate=input_sample_rate,
                 ),
                 output=AgentV1SettingsAudioOutput(
                     encoding="linear16",

@@ -179,10 +179,12 @@ export default function VoiceTutorPanel({ language = 'en', chatContext = [] }) {
         const compactContext = chatContext
           .slice(-6)
           .map((item) => ({ role: item.role, text: item.text }))
+        const inputSampleRate = Math.max(8000, Math.min(48000, Math.round(audioContext.sampleRate || 24000)))
         ws.send(
           JSON.stringify({
             type: 'start',
             language: language === 'sw' ? 'en' : 'en',
+            input_sample_rate: inputSampleRate,
             chat_context: compactContext,
           }),
         )
