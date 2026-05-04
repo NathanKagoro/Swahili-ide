@@ -91,10 +91,6 @@ async def voice_tutor_ws(websocket: WebSocket) -> None:
             AgentV1SettingsAudioOutput,
         )
         from deepgram.core.events import EventType
-        from deepgram.types.speak_settings_v1 import SpeakSettingsV1
-        from deepgram.types.speak_settings_v1provider import SpeakSettingsV1Provider_Deepgram
-        from deepgram.types.think_settings_v1 import ThinkSettingsV1
-        from deepgram.types.think_settings_v1provider import ThinkSettingsV1Provider_OpenAi
     except Exception as exc:  # noqa: BLE001
         await websocket.send_json(
             {
@@ -158,6 +154,7 @@ async def voice_tutor_ws(websocket: WebSocket) -> None:
         connection.on(EventType.CLOSE, on_close)
 
         settings_payload = AgentV1Settings(
+            type="Settings",
             audio=AgentV1SettingsAudio(
                 input=AgentV1SettingsAudioInput(
                     encoding="linear16",
@@ -177,19 +174,24 @@ async def voice_tutor_ws(websocket: WebSocket) -> None:
                         model=settings.deepgram_agent_listen_model,
                     )
                 ),
-                think=ThinkSettingsV1(
-                    provider=ThinkSettingsV1Provider_OpenAi(
-                        type="open_ai",
-                        model=settings.deepgram_agent_think_model,
-                    ),
-                    prompt=prompt,
-                ),
-                speak=SpeakSettingsV1(
-                    provider=SpeakSettingsV1Provider_Deepgram(
-                        type="deepgram",
-                        model=settings.deepgram_agent_speak_model,
-                    )
-                ),
+                # Deepgram SDK v6 expects think/speak provider shapes under agent settings.
+                think=[
+                    {
+                        "provider": {
+                            "type": "open_ai",
+                            "model": settings.deepgram_agent_think_model,
+                        },
+                        "prompt": prompt,
+                    }
+                ],
+                speak=[
+                    {
+                        "provider": {
+                            "type": "deepgram",
+                            "model": settings.deepgram_agent_speak_model,
+                        }
+                    }
+                ],
                 greeting=settings.deepgram_agent_greeting,
             ),
         )
