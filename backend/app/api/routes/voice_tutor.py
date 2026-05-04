@@ -122,10 +122,13 @@ async def voice_tutor_ws(websocket: WebSocket) -> None:
     prompt = build_voice_tutor_prompt(chat_context)
     loop = asyncio.get_running_loop()
     stop_event = threading.Event()
+    connection_cm: Any | None = None
+    connection: Any | None = None
 
     try:
         client = DeepgramClient(api_key=settings.deepgram_api_key)
-        connection = client.agent.v1.connect()
+        connection_cm = client.agent.v1.connect()
+        connection = connection_cm.__enter__()
 
         def _send_json(payload: dict[str, Any]) -> None:
             asyncio.run_coroutine_threadsafe(websocket.send_json(payload), loop)
@@ -242,7 +245,9 @@ async def voice_tutor_ws(websocket: WebSocket) -> None:
     finally:
         stop_event.set()
         try:
-            if "connection" in locals():
+            if connection_cm is not None:
+                connection_cm.__exit__(None, None, None)
+            elif connection is not None:
                 if hasattr(connection, "finish"):
                     connection.finish()
                 elif hasattr(connection, "close"):
