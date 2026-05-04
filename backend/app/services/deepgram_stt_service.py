@@ -33,24 +33,38 @@ def transcribe_audio_bytes_with_deepgram(
         raise RuntimeError("DEEPGRAM_API_KEY haijawekwa kwenye backend/.env.")
 
     try:
-        from deepgram import DeepgramClient, PrerecordedOptions
+        from deepgram import DeepgramClient
     except ImportError as exc:  # noqa: BLE001
         raise RuntimeError("Deepgram SDK haijasakinishwa. Endesha: pip install -r requirements.txt") from exc
 
     try:
         client = DeepgramClient(api_key=settings.deepgram_api_key)
-        source = {
-            "buffer": raw_audio,
-            "mimetype": content_type or "audio/webm",
-        }
-        options = PrerecordedOptions(
-            model=settings.deepgram_model,
-            language=language or settings.deepgram_language or None,
-            punctuate=True,
-            smart_format=True,
-        )
+        # v6+ generated SDK API
+        try:
+            response = client.listen.v1.media.transcribe_file(
+                request=raw_audio,
+                model=settings.deepgram_model,
+                language=language or settings.deepgram_language or None,
+                punctuate=True,
+                smart_format=True,
+                mimetype=content_type or "audio/webm",
+            )
+        # v3/v4 compatibility fallback
+        except Exception:
+            from deepgram import PrerecordedOptions
 
-        response = client.listen.rest.v("1").transcribe_file(source, options)
+            source = {
+                "buffer": raw_audio,
+                "mimetype": content_type or "audio/webm",
+            }
+            options = PrerecordedOptions(
+                model=settings.deepgram_model,
+                language=language or settings.deepgram_language or None,
+                punctuate=True,
+                smart_format=True,
+            )
+            response = client.listen.rest.v("1").transcribe_file(source, options)
+
         return _extract_transcript(response)
     except Exception as exc:  # noqa: BLE001
         raise RuntimeError(f"Deepgram transcription imeshindikana: {exc}") from exc
