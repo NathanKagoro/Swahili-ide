@@ -1,6 +1,8 @@
 import asyncio
+import importlib.util
 import json
 import threading
+from importlib import metadata
 from typing import Any
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
@@ -37,10 +39,19 @@ def _event_to_dict(message: Any) -> dict[str, Any]:
 
 @router.get("/voice/tutor/config")
 def voice_tutor_config() -> dict[str, Any]:
+    try:
+        deepgram_sdk_version = metadata.version("deepgram-sdk")
+    except metadata.PackageNotFoundError:
+        deepgram_sdk_version = "not-installed"
+
+    deepgram_agent_module_present = importlib.util.find_spec("deepgram.agent") is not None
+
     return {
         "enabled": settings.deepgram_agent_enabled,
         "runtime": get_voice_tutor_runtime_config(),
         "deepgram_key_present": bool(settings.deepgram_api_key.strip()),
+        "deepgram_sdk_version": deepgram_sdk_version,
+        "deepgram_agent_module_present": deepgram_agent_module_present,
     }
 
 
