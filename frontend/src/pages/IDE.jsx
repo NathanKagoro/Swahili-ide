@@ -371,7 +371,7 @@ function LessonExample({ lesson, lessonLanguage, overrideLanguage, onLanguageCha
         </div>
       </div>
       <Editor code={code} onChange={setCode} height="190px" fontSize={12} />
-      <Console output={output} error={error} compact />
+      <Console output={output} error={error} compact language={lessonLanguage} />
     </div>
   )
 }
@@ -416,7 +416,7 @@ export default function IDE({
   const [basicLoading, setBasicLoading] = useState(false)
   const [voiceTranscript, setVoiceTranscript] = useState('')
   const [chatPanelOpen, setChatPanelOpen] = useState(true)
-  const [showVoiceTools, setShowVoiceTools] = useState(false)
+  const [showVoiceTools, setShowVoiceTools] = useState(true)
   const [assistantMessages, setAssistantMessages] = useState([])
   const [assistantBusy, setAssistantBusy] = useState(false)
   const [assistantError, setAssistantError] = useState('')
@@ -1053,7 +1053,7 @@ export default function IDE({
                   </div>
 
                   <Editor code={basicCode} onChange={setBasicCode} height="320px" fontSize={13} />
-                  <Console output={basicOutput} error={basicError} />
+                  <Console output={basicOutput} error={basicError} language={language} />
 
                   <section className="dictionary-card">
                     <h3>{language === 'sw' ? 'Kamusi ya Pyswahili (Kiswahili hadi Kiingereza)' : 'Pyswahili Key (Swahili to English)'}</h3>
@@ -1090,7 +1090,7 @@ export default function IDE({
                         <p className="assistant-chat-subtitle">
                           {language === 'sw'
                             ? 'Msaidizi wa chat: andika ujumbe, kisha tumia sauti ukihitaji. Historia ya hivi karibuni huhifadhiwa ukiwa umesajili akaunti.'
-                            : 'Chat assistant: type your message below, then use voice only when needed. Recent history is saved when signed in.'}
+                            : 'Chat assistant: type your message below. Recent history is saved when signed in.'}
                         </p>
 
                         <div className="assistant-display-controls">
@@ -1124,14 +1124,14 @@ export default function IDE({
 
                         {showVoiceTools ? (
                           <>
+                            <VoiceTutorPanel
+                              language={language}
+                              chatContext={assistantMessages}
+                            />
                             <VoiceInput
                               onTranscribed={setVoiceTranscript}
                               transcript={voiceTranscript}
                               language={language}
-                            />
-                            <VoiceTutorPanel
-                              language={language}
-                              chatContext={assistantMessages}
                             />
                           </>
                         ) : null}

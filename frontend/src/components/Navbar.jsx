@@ -67,7 +67,7 @@ export default function Navbar({
         </div>
 
         <button onClick={onSwitchBasic} className="run-btn">
-          {mode === 'basic' ? (language === 'sw' ? 'Rudi Masomoni' : 'Back to Lessons') : language === 'sw' ? 'Nenda IDE ya Msingi' : 'Go to Basic IDE'}
+          {mode === 'basic' ? (language === 'sw' ? 'Nenda Masomoni' : 'Go to Lessons') : language === 'sw' ? 'Nenda IDE' : 'Go to IDE'}
         </button>
       </div>
     </header>

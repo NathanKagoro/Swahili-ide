@@ -351,6 +351,12 @@ export default function VoiceTutorPanel({ language = 'en', chatContext = [] }) {
         </button>
       </div>
 
+      <p className="mic-hint">
+        {isSwahiliUi
+          ? 'Pendekezo: tumia kipaza sauti cha headset/earphones chenye mic karibu na mdomo kwa matokeo bora.'
+          : 'Recommended: use a headset or earphone microphone close to your mouth for best results.'}
+      </p>
+
       <div className="voice-controls">
         <button
           onClick={startSession}

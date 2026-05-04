@@ -18,8 +18,7 @@ export default function VoiceInput({ onTranscribed, transcript, language = 'sw' 
   return (
     <section className="panel voice-panel">
       <div className="voice-panel-header">
-        <h2>{isSwahili ? 'Sauti hadi Maandishi (Beta)' : 'Speech to Text (Beta)'}</h2>
-        <span className="voice-beta-tag">BETA</span>
+        <h2>{isSwahili ? 'Sauti hadi Maandishi' : 'Speech to Text'}</h2>
       </div>
 
       {isSwahili ? (
