@@ -18,7 +18,7 @@ export default function VoiceInput({ onTranscribed, transcript, language = 'sw' 
   return (
     <section className="panel voice-panel">
       <div className="voice-panel-header">
-        <h2>{isSwahili ? 'Msaidizi wa Sauti (Beta)' : 'Voice Assistant (Beta)'}</h2>
+        <h2>{isSwahili ? 'Sauti hadi Maandishi (Beta)' : 'Speech to Text (Beta)'}</h2>
         <span className="voice-beta-tag">BETA</span>
       </div>
 
@@ -47,28 +47,27 @@ export default function VoiceInput({ onTranscribed, transcript, language = 'sw' 
         <button
           onClick={startRecording}
           disabled={recording || transcribing}
-          aria-label={isSwahili ? 'Anza kurekodi sauti' : 'Start recording voice'}
-          title={isSwahili ? 'Anza kurekodi sauti' : 'Start recording voice'}
+          aria-label={isSwahili ? 'Anza kurekodi sauti' : 'Start recording'}
+          title={isSwahili ? 'Anza kurekodi sauti' : 'Start recording'}
         >
-          🎙️
+          ▶
         </button>
         <button
           onClick={stopRecordingAndTranscribe}
           disabled={!recording || transcribing}
           aria-label={
             transcribing
-              ? (isSwahili ? 'Inatafsiri sauti' : 'Transcribing voice')
-              : (isSwahili ? 'Simamisha na tafsiri sauti' : 'Stop and transcribe voice')
+              ? (isSwahili ? 'Inatafsiri sauti' : 'Transcribing…')
+              : (isSwahili ? 'Simamisha na tafsiri sauti' : 'Stop and transcribe')
           }
           title={
             transcribing
-              ? (isSwahili ? 'Inatafsiri sauti' : 'Transcribing voice')
-              : (isSwahili ? 'Simamisha na tafsiri sauti' : 'Stop and transcribe voice')
+              ? (isSwahili ? 'Inatafsiri sauti' : 'Transcribing…')
+              : (isSwahili ? 'Simamisha na tafsiri sauti' : 'Stop and transcribe')
           }
         >
-          {transcribing ? '⏳' : '⏹️'}
+          {transcribing ? '⏳' : '■'}
         </button>
-        <span className="voice-symbol-hint" aria-hidden="true">🎙️ ▶ ⏹️</span>
       </div>
 
       <label className="transcript-label" htmlFor="mic-device-select">
