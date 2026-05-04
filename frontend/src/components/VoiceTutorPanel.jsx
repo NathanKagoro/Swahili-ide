@@ -33,6 +33,9 @@ export default function VoiceTutorPanel({ language = 'en', chatContext = [] }) {
   const [status, setStatus] = useState('idle')
   const [agentEvents, setAgentEvents] = useState([])
   const [config, setConfig] = useState(null)
+  const [micDevices, setMicDevices] = useState([])
+  const [selectedMicId, setSelectedMicId] = useState('')
+  const [loadingMics, setLoadingMics] = useState(false)
 
   const wsRef = useRef(null)
   const mediaStreamRef = useRef(null)
@@ -63,6 +66,49 @@ export default function VoiceTutorPanel({ language = 'en', chatContext = [] }) {
       })
     return () => {
       mounted = false
+    }
+  }, [])
+
+  const loadMicDevices = async ({ requestPermission = false } = {}) => {
+    if (!navigator.mediaDevices?.enumerateDevices) return
+    setLoadingMics(true)
+    let permissionStream = null
+
+    try {
+      if (requestPermission && navigator.mediaDevices?.getUserMedia) {
+        permissionStream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      }
+
+      const devices = await navigator.mediaDevices.enumerateDevices()
+      const inputs = devices.filter((device) => device.kind === 'audioinput')
+      setMicDevices(inputs)
+      setSelectedMicId((prev) => {
+        if (prev && inputs.some((d) => d.deviceId === prev)) return prev
+        return inputs[0]?.deviceId || ''
+      })
+    } catch {
+      setError('Could not enumerate microphones.')
+    } finally {
+      if (permissionStream) {
+        permissionStream.getTracks().forEach((track) => track.stop())
+      }
+      setLoadingMics(false)
+    }
+  }
+
+  useEffect(() => {
+    loadMicDevices()
+
+    const mediaDevices = navigator.mediaDevices
+    if (!mediaDevices?.addEventListener) return undefined
+
+    const handleDeviceChange = () => {
+      loadMicDevices()
+    }
+
+    mediaDevices.addEventListener('devicechange', handleDeviceChange)
+    return () => {
+      mediaDevices.removeEventListener('devicechange', handleDeviceChange)
     }
   }, [])
 
@@ -148,12 +194,15 @@ export default function VoiceTutorPanel({ language = 'en', chatContext = [] }) {
       setStatus('connecting')
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: {
+          ...(selectedMicId ? { deviceId: { exact: selectedMicId } } : {}),
           channelCount: 1,
           echoCancellation: true,
           noiseSuppression: true,
           autoGainControl: true,
         },
       })
+
+      loadMicDevices()
 
       const audioContext = new AudioContext({ sampleRate: 24000 })
       const source = audioContext.createMediaStreamSource(stream)
@@ -269,12 +318,55 @@ export default function VoiceTutorPanel({ language = 'en', chatContext = [] }) {
           : 'This mode runs a separate real-time voice conversation. It responds in English while reinforcing Pyswahili keywords.'}
       </p>
 
-      <div className="voice-controls">
-        <button onClick={startSession} disabled={isConnected || status === 'connecting'}>
-          {isSwahiliUi ? 'Anza Voice Tutor' : 'Start Voice Tutor'}
+      <div className="mic-picker-row">
+        <select
+          className="mic-device-select"
+          value={selectedMicId}
+          onChange={(event) => setSelectedMicId(event.target.value)}
+          disabled={loadingMics || isConnected || status === 'connecting'}
+          title={isSwahiliUi ? 'Chagua kipaza sauti' : 'Choose microphone'}
+          aria-label={isSwahiliUi ? 'Chagua kipaza sauti' : 'Choose microphone'}
+        >
+          {!micDevices.length && (
+            <option value="">
+              {isSwahiliUi ? 'Hakuna kipaza sauti kilichopatikana' : 'No microphone devices found'}
+            </option>
+          )}
+          {micDevices.map((device, index) => (
+            <option key={device.deviceId || `mic-${index}`} value={device.deviceId}>
+              {device.label || (isSwahiliUi ? `Kipaza sauti ${index + 1}` : `Microphone ${index + 1}`)}
+            </option>
+          ))}
+        </select>
+
+        <button
+          type="button"
+          className="mic-refresh-btn"
+          onClick={() => loadMicDevices({ requestPermission: true })}
+          disabled={loadingMics || isConnected || status === 'connecting'}
+          title={isSwahiliUi ? 'Sasisha orodha ya vipaza sauti' : 'Refresh microphone list'}
+          aria-label={isSwahiliUi ? 'Sasisha orodha ya vipaza sauti' : 'Refresh microphone list'}
+        >
+          ↻
         </button>
-        <button onClick={stopSession} disabled={!isConnected && status !== 'connecting'}>
-          {isSwahiliUi ? 'Simamisha' : 'Stop'}
+      </div>
+
+      <div className="voice-controls">
+        <button
+          onClick={startSession}
+          disabled={isConnected || status === 'connecting'}
+          title={isSwahiliUi ? 'Anza Voice Tutor' : 'Start Voice Tutor'}
+          aria-label={isSwahiliUi ? 'Anza Voice Tutor' : 'Start Voice Tutor'}
+        >
+          ▶
+        </button>
+        <button
+          onClick={stopSession}
+          disabled={!isConnected && status !== 'connecting'}
+          title={isSwahiliUi ? 'Simamisha Voice Tutor' : 'Stop Voice Tutor'}
+          aria-label={isSwahiliUi ? 'Simamisha Voice Tutor' : 'Stop Voice Tutor'}
+        >
+          ■
         </button>
       </div>
 

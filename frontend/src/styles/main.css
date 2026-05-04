@@ -1327,6 +1327,31 @@ body {
   font-size: 0.82rem;
 }
 
+.mic-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.mic-refresh-btn {
+  border: 0;
+  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.mic-refresh-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .transcript-box {
   width: 100%;
   min-height: 140px;
