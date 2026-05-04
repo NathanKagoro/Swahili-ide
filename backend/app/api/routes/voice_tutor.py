@@ -126,9 +126,22 @@ async def voice_tutor_ws(websocket: WebSocket) -> None:
     connection: Any | None = None
 
     try:
-        client = DeepgramClient(api_key=settings.deepgram_api_key)
+        deepgram_api_key = settings.deepgram_api_key.strip()
+        client = DeepgramClient(api_key=deepgram_api_key)
         connection_cm = client.agent.v1.connect()
-        connection = connection_cm.__enter__()
+        try:
+            connection = connection_cm.__enter__()
+        except Exception as exc:  # noqa: BLE001
+            detail = str(exc)
+            if "HTTP 401" in detail or "401" in detail:
+                detail = (
+                    "Deepgram websocket auth failed (HTTP 401). "
+                    "Check DEEPGRAM_API_KEY in Railway backend variables, ensure the key is active, "
+                    "and verify your Deepgram project has access to Voice Agent."
+                )
+            await websocket.send_json({"type": "error", "detail": detail})
+            await websocket.close(code=1011)
+            return
 
         def _send_json(payload: dict[str, Any]) -> None:
             asyncio.run_coroutine_threadsafe(websocket.send_json(payload), loop)
