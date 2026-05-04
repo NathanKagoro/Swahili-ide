@@ -1,6 +1,8 @@
 export default function Navbar({
+  mode,
   language,
   onSetLanguage,
+  onSwitchBasic,
   onSwitchLearn,
   onSwitchTests,
   isLoggedIn,
@@ -14,8 +16,10 @@ export default function Navbar({
   return (
     <header className="navbar">
       <div className="navbar-zone navbar-left">
-        <button className="ghost-btn" onClick={onSwitchLearn}>
-          {language === 'sw' ? 'Masomo' : 'Lessons'}
+        <button className="ghost-btn" onClick={mode === 'learn' ? onSwitchBasic : onSwitchLearn}>
+          {mode === 'learn'
+            ? (language === 'sw' ? 'Nenda IDE' : 'Go to IDE')
+            : (language === 'sw' ? 'Masomo' : 'Lessons')}
         </button>
         <button className="ghost-btn" onClick={onSwitchTests}>
           {language === 'sw' ? 'Majaribio' : 'Tests'}
@@ -35,10 +39,6 @@ export default function Navbar({
       </div>
 
       <div className="navbar-zone navbar-right">
-        <a href="https://nathankagoro.com" target="_blank" rel="noopener noreferrer" className="nav-portfolio-link" title="Portfolio">
-          {language === 'sw' ? 'Kazi' : 'Portfolio'}
-        </a>
-
         <div className="nav-account-shell">
           {isLoggedIn ? (
             <div className="nav-account-logged-in">
@@ -63,6 +63,10 @@ export default function Navbar({
           {authError ? <p className="nav-status fail-msg">{authError}</p> : null}
           {authMessage ? <p className="nav-status pass-msg">{authMessage}</p> : null}
         </div>
+
+        <a href="https://nathankagoro.com" target="_blank" rel="noopener noreferrer" className="nav-portfolio-pill" title="Portfolio">
+          {language === 'sw' ? 'Kazi' : 'Portfolio'}
+        </a>
       </div>
     </header>
   )

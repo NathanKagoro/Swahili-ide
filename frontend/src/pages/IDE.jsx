@@ -857,8 +857,10 @@ export default function IDE({
   return (
     <div className="learn-page">
       <Navbar
+        mode={mode}
         language={language}
         onSetLanguage={onSetLanguage}
+        onSwitchBasic={() => setMode('basic')}
         onSwitchLearn={() => setMode('learn')}
         onSwitchTests={() => setMode('tests')}
         isLoggedIn={isLoggedIn}

@@ -84,20 +84,24 @@ body {
   color: #fff;
 }
 
-.nav-portfolio-link {
+.nav-portfolio-pill {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   text-decoration: none;
-  color: #d95d39;
-  font-weight: 600;
+  color: #8f3a20;
+  font-weight: 700;
   font-size: 0.95rem;
-  padding: 0.5rem 0.75rem;
+  border: 1px solid #d3c2a9;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
   min-height: 36px;
-  border-radius: 6px;
+  line-height: 1;
   transition: all 0.2s ease;
 }
 
-.nav-portfolio-link:hover {
+.nav-portfolio-pill:hover {
   background: #f5f0e8;
   color: #c64a2e;
 }
