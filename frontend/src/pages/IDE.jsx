@@ -397,7 +397,7 @@ export default function IDE({
     lang: item.lang || detectResponseLanguage(item.text, language),
   }))
 
-  const [mode, setMode] = useState('learn')
+  const [mode, setMode] = useState('basic')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [activeLessonId, setActiveLessonId] = useState(lessons[0].id)
   const [exampleLanguageByLesson, setExampleLanguageByLesson] = useState({})
