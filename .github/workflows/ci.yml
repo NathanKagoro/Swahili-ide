@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            frontend
+          sparse-checkout-cone-mode: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - name: Unit tests (translator, progress storage, error messages, patterns)
+        run: npm test
+      - name: Build exactly as the Pages workflow does
+        run: npm run build
+        env:
+          VITE_BASE: /Swahili-ide/
+      - name: Run every lesson, task and dictionary example in headless Chrome
+        run: npm run test:lessons
+      - name: Screenshots at 1440, 390 and 360 px
+        run: npm run shots
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: screenshots
+          path: frontend/shots
+          if-no-files-found: warn
+
+  backend:
+    # The optional server. Only the sandbox tests run here: they need no API
+    # keys and no speech models.
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            backend/app
+            backend/tests
+            backend/requirements-dev.txt
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-dev.txt
+      - run: python -m pytest tests/test_sandbox.py -q

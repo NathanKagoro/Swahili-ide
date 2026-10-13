@@ -94,9 +94,6 @@ export default function App() {
       </a>
       <div className="field">
         <header className="selvedge">
-          <a className="back" href="https://nathankagoro.com">
-            ← nathankagoro.com
-          </a>
           <p className="brand">
             <a href="#/">Pyswahili</a>
           </p>
@@ -115,6 +112,9 @@ export default function App() {
               English
             </button>
           </div>
+          <a className="back" href="https://nathankagoro.com">
+            ← nathankagoro.com
+          </a>
         </header>
 
         <main id="main" tabIndex={-1}>

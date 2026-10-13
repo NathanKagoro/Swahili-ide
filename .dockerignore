@@ -16,7 +16,7 @@ tests/
 scripts/
 
 frontend/node_modules/
-frontend/frontend-build/
+frontend/dist/
 
 backend/.env
 backend/data/

@@ -89,6 +89,19 @@ class SandboxExecutionTests(unittest.TestCase):
         self.assertEqual(output, "3\nAsha\n")
         self.assertIsNone(error)
 
+    def test_child_environment_does_not_carry_server_secrets(self) -> None:
+        import os
+        from unittest import mock
+
+        from app.utils.sandbox import _child_environment
+
+        with mock.patch.dict(os.environ, {"OPENROUTER_API_KEY": "sk-secret", "DEEPGRAM_API_KEY": "dg-secret"}):
+            env = _child_environment()
+
+        self.assertNotIn("OPENROUTER_API_KEY", env)
+        self.assertNotIn("DEEPGRAM_API_KEY", env)
+        self.assertLessEqual(set(env), {"PYTHONIOENCODING", "PYTHONDONTWRITEBYTECODE", "SYSTEMROOT"})
+
 
 if __name__ == "__main__":
     unittest.main()

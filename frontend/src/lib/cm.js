@@ -173,6 +173,9 @@ export function createEditor(parent, { doc = '', onChange, onRun, label = '', pl
       ],
     }),
   })
+  // Line heights are measured when the editor mounts; measure again once the
+  // code font has arrived or the gutter numbers sit at the wrong height.
+  document.fonts?.ready.then(() => view.requestMeasure())
   return {
     view,
     getDoc: () => view.state.doc.toString(),
