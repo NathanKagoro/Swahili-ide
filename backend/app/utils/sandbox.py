@@ -149,7 +149,32 @@ _BANNED_NODE_TYPES = (
 )
 
 
+def _child_environment() -> dict[str, str]:
+    """Minimal environment for the sandbox child.
+
+    The child must never inherit the server's environment: that holds the
+    OpenRouter and Deepgram API keys, and user code could print them.
+    Only the few variables the interpreter needs to start are passed on.
+    """
+    env = {"PYTHONIOENCODING": "utf-8", "PYTHONDONTWRITEBYTECODE": "1"}
+    # Windows cannot start python.exe without SYSTEMROOT.
+    for name in ("SYSTEMROOT", "SystemRoot"):
+        value = os.environ.get(name)
+        if value:
+            env["SYSTEMROOT"] = value
+            break
+    return env
+
+
 # Execute already-transpiled Python in an isolated subprocess with AST safety checks.
+#
+# NOTE FOR ANY PUBLIC DEPLOYMENT: this sandbox limits time and output only.
+# It does not limit memory: `'a' * (2 * 10**9)` succeeds and allocates 2 GB.
+# Before exposing /api/run-swahili to the internet, run the child under a
+# memory limit (resource.setrlimit(RLIMIT_AS) in a preexec_fn on Linux, a
+# container with --memory, or a cgroup) and rate-limit the endpoint.
+# The static site does not use this module: it runs code in the visitor's
+# own browser with Pyodide.
 def execute_safely(code: str) -> tuple[str, str | None]:
     runner_code = _RUNNER_TEMPLATE.format(
         banned_node_types=_BANNED_NODE_TYPES,
@@ -170,7 +195,7 @@ def execute_safely(code: str) -> tuple[str, str | None]:
                 capture_output=True,
                 text=True,
                 cwd=temp_dir,
-                env={**os.environ, "PYTHONIOENCODING": "utf-8"},
+                env=_child_environment(),
                 timeout=settings.code_exec_timeout_seconds,
                 check=False,
             )

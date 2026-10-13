@@ -16,3 +16,14 @@ dist/
 build/
 frontend-build/
 node_modules/
+
+# Runtime data and generated binaries (never commit)
+backend/data/*.db
+backend/piper/
+backend/audio/*.wav
+!backend/audio/lesson-*.wav
+.env
+.env.local
+.env.*.local
+frontend/dist/
+frontend/shots/
