@@ -1,106 +1,76 @@
-import axios from 'axios'
+// Code always runs in the browser (see ../runner/runner.js).
+//
+// Everything else in this file talks to the optional FastAPI backend in
+// /backend. The public site is built without VITE_API_URL, so none of it is
+// called there. Set VITE_API_URL at build time (for example
+// http://127.0.0.1:8000/api) to switch the backend features on.
+export { runSwahili } from '../runner/runner.js'
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
-})
+export const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
+export const backendConfigured = Boolean(API_URL)
 
-// Build auth headers only when a token exists.
-function authHeaders(token) {
-  return token ? { Authorization: `Bearer ${token}` } : {}
+async function request(path, { method = 'GET', body, form, timeoutMs = 60_000 } = {}) {
+  if (!backendConfigured) throw new Error('No backend configured')
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    const response = await fetch(`${API_URL}${path}`, {
+      method,
+      signal: controller.signal,
+      headers: body ? { 'Content-Type': 'application/json' } : undefined,
+      body: form || (body ? JSON.stringify(body) : undefined),
+    })
+    const data = await response.json().catch(() => ({}))
+    if (!response.ok) throw new Error(typeof data.detail === 'string' ? data.detail : `HTTP ${response.status}`)
+    return data
+  } finally {
+    clearTimeout(timer)
+  }
 }
 
-export async function runSwahili(code) {
-  const { data } = await api.post('/run-swahili', { code })
-  return data
+// The backend exposes /health at its root, one level above /api.
+// Resolves to true or false. It never throws and never logs.
+export async function checkBackend() {
+  if (!backendConfigured) return false
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), 4000)
+  try {
+    const response = await fetch(`${API_URL.replace(/\/api$/, '')}/health`, { signal: controller.signal })
+    if (!response.ok) return false
+    const data = await response.json().catch(() => null)
+    return data?.status === 'ok'
+  } catch {
+    return false
+  } finally {
+    clearTimeout(timer)
+  }
 }
 
-export async function registerAccount(username, password) {
-  const { data } = await api.post('/auth/register', { username, password })
-  return data
+export function transcribeAudio(file, lang = 'sw') {
+  const form = new FormData()
+  form.append('file', file)
+  form.append('lang', lang)
+  return request('/transcribe', { method: 'POST', form })
 }
 
-export async function loginAccount(username, password) {
-  const { data } = await api.post('/auth/login', { username, password })
-  return data
+export function fetchVoiceTutorConfig() {
+  return request('/voice/tutor/config')
 }
 
-export async function logoutAccount(token) {
-  const { data } = await api.post('/auth/logout', null, { headers: authHeaders(token) })
-  return data
+export function speakText(text, lang = 'sw', lessonId = null) {
+  return request('/speak', { method: 'POST', body: { text, lang, lesson_id: lessonId } })
 }
 
-export async function fetchProgress(token) {
-  const { data } = await api.get('/progress', { headers: authHeaders(token) })
-  return data
-}
-
-export async function updateProgress(token, completedLessons) {
-  const { data } = await api.put(
-    '/progress',
-    { completed_lessons: completedLessons },
-    { headers: authHeaders(token) },
-  )
-  return data
-}
-
-export async function transcribeAudio(file, lang = 'sw') {
-  const formData = new FormData()
-  formData.append('file', file)
-  formData.append('lang', lang)
-  const { data } = await api.post('/transcribe', formData)
-  return data
-}
-
-export async function fetchVoiceTutorConfig() {
-  const { data } = await api.get('/voice/tutor/config')
-  return data
-}
-
-export async function speakText(text, lang = 'sw', lessonId = null) {
-  const { data } = await api.post('/speak', {
-    text,
-    lang,
-    lesson_id: lessonId,
+export function explainCode(prompt, targetLanguage = 'en', runtimeContext = {}) {
+  return request('/explain', {
+    method: 'POST',
+    body: { prompt, target_language: targetLanguage, runtime_context: runtimeContext },
   })
-  return data
 }
 
-export async function explainCode(prompt, targetLanguage = 'en', runtimeContext = {}) {
-  // Keep runtime context visible in dev tools while we iterate on prompt behavior.
-  console.info('LLM context payload (/explain):', runtimeContext)
-  const { data } = await api.post('/explain', {
-    prompt,
-    target_language: targetLanguage,
-    runtime_context: runtimeContext,
+export function generateCode(prompt, targetLanguage = 'en', runtimeContext = {}) {
+  return request('/generate', {
+    method: 'POST',
+    body: { prompt, target_language: targetLanguage, runtime_context: runtimeContext },
   })
-  return data
 }
-
-export async function generateCode(prompt, targetLanguage = 'en', runtimeContext = {}) {
-  // Keep runtime context visible in dev tools while we iterate on prompt behavior.
-  console.info('LLM context payload (/generate):', runtimeContext)
-  const { data } = await api.post('/generate', {
-    prompt,
-    target_language: targetLanguage,
-    runtime_context: runtimeContext,
-  })
-  return data
-}
-
-export async function fetchChatHistory(token, limit = 20) {
-  const { data } = await api.get('/chat/history', {
-    params: { limit },
-    headers: authHeaders(token),
-  })
-  return data
-}
-
-export async function saveChatHistory(token, messages) {
-  const { data } = await api.post(
-    '/chat/history',
-    { messages },
-    { headers: authHeaders(token) },
-  )
-  return data
-}
-

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { fetchVoiceTutorConfig } from '../services/api'
+import { API_URL, fetchVoiceTutorConfig } from '../services/api'
 
 function httpToWs(url) {
   if (!url) return ''
@@ -50,8 +50,7 @@ export default function VoiceTutorPanel({ language = 'en', chatContext = [] }) {
   const isSwahiliUi = language === 'sw'
 
   const wsUrl = useMemo(() => {
-    const baseApi = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
-    const wsBase = httpToWs(baseApi.replace(/\/$/, ''))
+    const wsBase = httpToWs(API_URL)
     return `${wsBase}/voice/tutor/ws`
   }, [])
 
@@ -305,86 +304,45 @@ export default function VoiceTutorPanel({ language = 'en', chatContext = [] }) {
     }
   }
 
+  const busy = loadingMics || isConnected || status === 'connecting'
+  const t = (sw, en) => (isSwahiliUi ? sw : en)
+
   return (
-    <section className="panel voice-panel voice-tutor-panel">
-      <div className="voice-panel-header">
-        <h2>{isSwahiliUi ? 'Mkufunzi wa Sauti (Deepgram)' : 'Voice Tutor (Deepgram)'}</h2>
-        <span className="voice-beta-tag">BETA</span>
-      </div>
-
-      <p className="mic-hint">
-        {isSwahiliUi
-          ? 'Njia hii ni mazungumzo ya sauti ya moja kwa moja. Inalenga majibu ya Kiingereza na kufundisha keywords za Pyswahili.'
-          : 'This mode runs a separate real-time voice conversation. It responds in English while reinforcing Pyswahili keywords.'}
+    <section className="voice-box">
+      <h3>{t('Mwalimu wa sauti (Deepgram)', 'Voice tutor (Deepgram)')}</h3>
+      <p>
+        {t(
+          'Mazungumzo ya sauti ya moja kwa moja. Hujibu kwa Kiingereza huku ikifundisha maneno ya Pyswahili. Tumia kipaza sauti cha karibu na mdomo.',
+          'A live spoken conversation. It answers in English while teaching the Pyswahili words. Use a microphone close to your mouth.',
+        )}
       </p>
-
-      <div className="mic-picker-row">
-        <select
-          className="mic-device-select"
-          value={selectedMicId}
-          onChange={(event) => setSelectedMicId(event.target.value)}
-          disabled={loadingMics || isConnected || status === 'connecting'}
-          title={isSwahiliUi ? 'Chagua kipaza sauti' : 'Choose microphone'}
-          aria-label={isSwahiliUi ? 'Chagua kipaza sauti' : 'Choose microphone'}
-        >
-          {!micDevices.length && (
-            <option value="">
-              {isSwahiliUi ? 'Hakuna kipaza sauti kilichopatikana' : 'No microphone devices found'}
-            </option>
-          )}
+      <label className="labelled">
+        <span>{t('Kipaza sauti', 'Microphone')}</span>
+        <select value={selectedMicId} onChange={(event) => setSelectedMicId(event.target.value)} disabled={busy}>
+          {!micDevices.length && <option value="">{t('Hakuna kipaza sauti', 'No microphone found')}</option>}
           {micDevices.map((device, index) => (
             <option key={device.deviceId || `mic-${index}`} value={device.deviceId}>
-              {device.label || (isSwahiliUi ? `Kipaza sauti ${index + 1}` : `Microphone ${index + 1}`)}
+              {device.label || `${t('Kipaza sauti', 'Microphone')} ${index + 1}`}
             </option>
           ))}
         </select>
-
-        <button
-          type="button"
-          className="mic-refresh-btn"
-          onClick={() => loadMicDevices({ requestPermission: true })}
-          disabled={loadingMics || isConnected || status === 'connecting'}
-          title={isSwahiliUi ? 'Sasisha orodha ya vipaza sauti' : 'Refresh microphone list'}
-          aria-label={isSwahiliUi ? 'Sasisha orodha ya vipaza sauti' : 'Refresh microphone list'}
-        >
-          ↻
+      </label>
+      <div className="voice-actions">
+        <button type="button" className="btn btn-line" onClick={() => loadMicDevices({ requestPermission: true })} disabled={busy}>
+          {t('Sasisha orodha', 'Refresh list')}
+        </button>
+        <button type="button" className="btn btn-line" onClick={startSession} disabled={isConnected || status === 'connecting'}>
+          {t('Anza mazungumzo', 'Start conversation')}
+        </button>
+        <button type="button" className="btn btn-line" onClick={stopSession} disabled={!isConnected && status !== 'connecting'}>
+          {t('Maliza', 'End')}
         </button>
       </div>
-
-      <p className="mic-hint">
-        {isSwahiliUi
-          ? 'Pendekezo: tumia kipaza sauti cha headset/earphones chenye mic karibu na mdomo kwa matokeo bora.'
-          : 'Recommended: use a headset or earphone microphone close to your mouth for best results.'}
+      <p className="voice-status" aria-live="polite">
+        {t('Hali', 'Status')}: {status}
+        {agentEvents.length ? `\n${agentEvents.join('\n')}` : ''}
       </p>
-
-      <div className="voice-controls">
-        <button
-          onClick={startSession}
-          disabled={isConnected || status === 'connecting'}
-          title={isSwahiliUi ? 'Anza Voice Tutor' : 'Start Voice Tutor'}
-          aria-label={isSwahiliUi ? 'Anza Voice Tutor' : 'Start Voice Tutor'}
-        >
-          ▶
-        </button>
-        <button
-          onClick={stopSession}
-          disabled={!isConnected && status !== 'connecting'}
-          title={isSwahiliUi ? 'Simamisha Voice Tutor' : 'Stop Voice Tutor'}
-          aria-label={isSwahiliUi ? 'Simamisha Voice Tutor' : 'Stop Voice Tutor'}
-        >
-          ■
-        </button>
-      </div>
-
-      <p className="transcript-label">
-        {isSwahiliUi ? 'Hali' : 'Status'}: {status}
-      </p>
-
-      <div className="transcript-preview" aria-live="polite">
-        {agentEvents.length ? agentEvents.join('\n') : (isSwahiliUi ? 'Bado hakuna matukio ya voice tutor.' : 'No voice tutor events yet.')}
-      </div>
-
-      {error && <p className="voice-error">{error}</p>}
+      {error && <p className="optional-state">{error}</p>}
     </section>
   )
 }

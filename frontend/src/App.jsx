@@ -1,208 +1,174 @@
-import { useEffect, useState } from 'react'
-import IDE from './pages/IDE'
-import AuthPage from './pages/AuthPage'
-import { fetchProgress, loginAccount, logoutAccount, registerAccount, updateProgress } from './services/api'
+import { useCallback, useEffect, useState } from 'react'
+import Playground from './views/Playground'
+import { FIRST_EXAMPLE } from './data/samples'
+import Lessons from './views/Lessons'
+import Practice from './views/Practice'
+import Dictionary from './views/Dictionary'
+import OptionalPanel from './components/OptionalPanel'
+import { lessons } from './data/lessons'
+import { KEYWORD_EXAMPLES } from './data/keywordExamples'
+import { backendConfigured, checkBackend, runSwahili } from './services/api'
+import { loadProgress, markComplete, readPref, saveProgress, writePref } from './lib/progress'
+import { proverbFor } from './lib/proverbs'
+import { clothVars } from './lib/kanga'
+import { toPython } from './lib/translate'
 
-const progressStorageKey = 'swahili-ide-completed-lessons'
-const authStorageKey = 'swahili-ide-auth'
+const LESSON_IDS = lessons.map((lesson) => lesson.id)
+const VIEWS = [
+  ['uwanja', 'Uwanja', 'Playground'],
+  ['masomo', 'Masomo', 'Lessons'],
+  ['mazoezi', 'Mazoezi', 'Practice'],
+  ['kamusi', 'Kamusi', 'Dictionary'],
+]
+// Each page wears a different cloth; each lesson has its own.
+const CLOTH_SEED = { uwanja: 0, mazoezi: 9, kamusi: 14 }
 
-function mergeCompletedLessons(localMap, remoteMap) {
-  const merged = { ...(remoteMap || {}) }
-  Object.entries(localMap || {}).forEach(([lessonId, value]) => {
-    if (value) {
-      merged[lessonId] = true
-    }
-  })
-  return merged
+function readRoute() {
+  const [view, id] = window.location.hash.replace(/^#\/?/, '').split('/')
+  if (view === 'masomo') return { view, lessonId: LESSON_IDS.includes(id) ? id : readPref('swahili-ide-lesson', LESSON_IDS[0]) }
+  if (view === 'mazoezi' || view === 'kamusi') return { view, lessonId: null }
+  return { view: 'uwanja', lessonId: null }
 }
 
-function resolveRoute(pathname) {
-  if (pathname === '/login') {
-    return 'login'
-  }
-  if (pathname === '/signup') {
-    return 'signup'
-  }
-  return 'ide'
-}
+// Exposed for the headless test script and for anyone curious in the console.
+if (typeof window !== 'undefined') window.pyswahili = { run: runSwahili, toPython }
 
 export default function App() {
-  const [route, setRoute] = useState(() => resolveRoute(window.location.pathname))
-  const [language, setLanguage] = useState('sw')
-  const [completedLessons, setCompletedLessons] = useState(() => {
-    const raw = localStorage.getItem(progressStorageKey)
-    return raw ? JSON.parse(raw) : {}
-  })
-  const [authState, setAuthState] = useState(() => {
-    const raw = localStorage.getItem(authStorageKey)
-    return raw ? JSON.parse(raw) : null
-  })
-  const [progressReady, setProgressReady] = useState(false)
-  const [authLoading, setAuthLoading] = useState(false)
-  const [authError, setAuthError] = useState('')
-  const [authMessage, setAuthMessage] = useState('')
-
-  const isLoggedIn = Boolean(authState?.token)
+  const [lang, setLang] = useState(() => (readPref('swahili-ide-lang', 'sw') === 'en' ? 'en' : 'sw'))
+  const [route, setRoute] = useState(readRoute)
+  const [progress, setProgress] = useState(() => loadProgress(LESSON_IDS))
+  const [code, setCode] = useState(() => readPref('swahili-ide-draft', FIRST_EXAMPLE))
+  const [backendUp, setBackendUp] = useState(null)
+  const t = (sw, en) => (lang === 'sw' ? sw : en)
 
   useEffect(() => {
-    const onPopState = () => setRoute(resolveRoute(window.location.pathname))
-    window.addEventListener('popstate', onPopState)
-    return () => window.removeEventListener('popstate', onPopState)
+    const onHash = () => {
+      setRoute(readRoute())
+      window.scrollTo(0, 0)
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
   }, [])
 
   useEffect(() => {
-    let cancelled = false
-
-    async function loadSavedProgress() {
-      if (!authState?.token) {
-        setProgressReady(true)
-        return
-      }
-
-      try {
-        const data = await fetchProgress(authState.token)
-        if (cancelled) {
-          return
-        }
-
-        const localRaw = localStorage.getItem(progressStorageKey)
-        const localMap = localRaw ? JSON.parse(localRaw) : {}
-        const merged = mergeCompletedLessons(localMap, data.completed_lessons)
-        setCompletedLessons(merged)
-        localStorage.setItem(progressStorageKey, JSON.stringify(merged))
-
-        if (JSON.stringify(merged) !== JSON.stringify(data.completed_lessons)) {
-          await updateProgress(authState.token, merged)
-        }
-
-        setAuthMessage(language === 'sw' ? 'Maendeleo yako yamehifadhiwa kwenye akaunti.' : 'Your progress is now saved to your account.')
-      } catch {
-        if (!cancelled) {
-          setAuthState(null)
-          localStorage.removeItem(authStorageKey)
-          setAuthError(language === 'sw' ? 'Kikao cha akaunti kimeisha. Unaendelea kama mgeni.' : 'Your session expired. Continuing as guest.')
-        }
-      } finally {
-        if (!cancelled) {
-          setProgressReady(true)
-        }
-      }
-    }
-
-    loadSavedProgress()
-
-    return () => {
-      cancelled = true
-    }
-  }, [authState?.token, language])
+    document.documentElement.lang = lang
+    document.title = lang === 'sw' ? 'Pyswahili: Python kwa Kiswahili' : 'Pyswahili: Python in Swahili'
+    writePref('swahili-ide-lang', lang)
+  }, [lang])
 
   useEffect(() => {
-    localStorage.setItem(progressStorageKey, JSON.stringify(completedLessons))
-    if (!progressReady || !authState?.token) {
-      return
+    saveProgress(progress)
+  }, [progress])
+
+  useEffect(() => {
+    const timer = setTimeout(() => writePref('swahili-ide-draft', code), 400)
+    return () => clearTimeout(timer)
+  }, [code])
+
+  useEffect(() => {
+    if (route.lessonId) writePref('swahili-ide-lesson', route.lessonId)
+    const seed = route.view === 'masomo' ? lessons.find((lesson) => lesson.id === route.lessonId)?.order || 1 : CLOTH_SEED[route.view]
+    for (const [name, value] of Object.entries(clothVars(seed))) document.documentElement.style.setProperty(name, value)
+  }, [route])
+
+  useEffect(() => {
+    if (!backendConfigured) return undefined
+    let live = true
+    checkBackend().then((ok) => live && setBackendUp(ok))
+    return () => {
+      live = false
     }
+  }, [])
 
-    updateProgress(authState.token, completedLessons).catch(() => {
-      setAuthError(language === 'sw' ? 'Imeshindikana kusawazisha maendeleo kwa sasa.' : 'Could not sync progress right now.')
-    })
-  }, [authState?.token, completedLessons, progressReady, language])
+  const go = useCallback((hash) => {
+    window.location.hash = hash
+  }, [])
+  const onComplete = useCallback((id) => setProgress((current) => markComplete(current, id)), [])
 
-  const persistAuth = (nextAuthState) => {
-    setAuthState(nextAuthState)
-    if (nextAuthState) {
-      localStorage.setItem(authStorageKey, JSON.stringify(nextAuthState))
-    } else {
-      localStorage.removeItem(authStorageKey)
-    }
-  }
-
-  const goTo = (path) => {
-    if (window.location.pathname !== path) {
-      window.history.pushState({}, '', path)
-    }
-    setRoute(resolveRoute(path))
-    window.scrollTo(0, 0)
-  }
-
-  const handleAuthSubmit = async (nextView, username, password) => {
-    setAuthLoading(true)
-    setAuthError('')
-    setAuthMessage('')
-
-    try {
-      const data = nextView === 'register'
-        ? await registerAccount(username, password)
-        : await loginAccount(username, password)
-
-      const merged = mergeCompletedLessons(completedLessons, data.completed_lessons)
-      persistAuth({ token: data.token, user: data.user })
-      setCompletedLessons(merged)
-      localStorage.setItem(progressStorageKey, JSON.stringify(merged))
-
-      if (JSON.stringify(merged) !== JSON.stringify(data.completed_lessons)) {
-        await updateProgress(data.token, merged)
-      }
-
-      setAuthMessage(
-        language === 'sw'
-          ? 'Umeingia. Maendeleo yako sasa yatahifadhiwa kwenye akaunti.'
-          : 'You are signed in. Your progress will now be saved to your account.',
-      )
-      setProgressReady(true)
-      goTo('/')
-    } catch (err) {
-      setAuthError(err?.response?.data?.detail || err?.message || (language === 'sw' ? 'Imeshindikana kuingia kwenye akaunti.' : 'Could not sign in.'))
-    } finally {
-      setAuthLoading(false)
-    }
-  }
-
-  const handleLogout = async () => {
-    const token = authState?.token
-    persistAuth(null)
-    setAuthMessage(language === 'sw' ? 'Unaendelea kama mgeni. Maendeleo ya ndani bado yapo kwenye kifaa hiki.' : 'You are now continuing as a guest. Local progress remains on this device.')
-
-    if (token) {
-      try {
-        await logoutAccount(token)
-      } catch {
-        // Ignore logout failures after local session is cleared.
-      }
-    }
-  }
-
-  if (route === 'login' || route === 'signup') {
-    return (
-      <AuthPage
-        authMode={route}
-        language={language}
-        onSetLanguage={setLanguage}
-        onSubmitAuth={handleAuthSubmit}
-        authLoading={authLoading}
-        authError={authError}
-        authMessage={authMessage}
-        isLoggedIn={isLoggedIn}
-        authState={authState}
-        onLogout={handleLogout}
-        onGoHome={() => goTo('/')}
-        onSwitchAuthMode={(mode) => goTo(mode === 'register' ? '/signup' : '/login')}
-      />
-    )
-  }
+  const [proverb, gloss] = proverbFor(route.view, route.lessonId)
 
   return (
-    <IDE
-      language={language}
-      onSetLanguage={setLanguage}
-      authState={authState}
-      isLoggedIn={isLoggedIn}
-      authError={authError}
-      authMessage={authMessage}
-      onLogout={handleLogout}
-      onOpenLogin={() => goTo('/login')}
-      onOpenSignup={() => goTo('/signup')}
-      completedLessons={completedLessons}
-      onSetCompletedLessons={setCompletedLessons}
-    />
+    <div className="cloth">
+      <a className="skip" href="#main">
+        {t('Ruka hadi kwenye maudhui', 'Skip to content')}
+      </a>
+      <div className="field">
+        <header className="selvedge">
+          <a className="back" href="https://nathankagoro.com">
+            ← nathankagoro.com
+          </a>
+          <p className="brand">
+            <a href="#/">Pyswahili</a>
+          </p>
+          <nav className="nav" aria-label={t('Kurasa', 'Pages')}>
+            {VIEWS.map(([id, sw, en]) => (
+              <a key={id} href={id === 'uwanja' ? '#/' : `#/${id}`} className={route.view === id ? 'is-on' : ''} aria-current={route.view === id ? 'page' : undefined}>
+                {t(sw, en)}
+              </a>
+            ))}
+          </nav>
+          <div className="lang" role="group" aria-label={t('Lugha', 'Language')}>
+            <button type="button" className={lang === 'sw' ? 'is-on' : ''} aria-pressed={lang === 'sw'} onClick={() => setLang('sw')} lang="sw">
+              Kiswahili
+            </button>
+            <button type="button" className={lang === 'en' ? 'is-on' : ''} aria-pressed={lang === 'en'} onClick={() => setLang('en')} lang="en">
+              English
+            </button>
+          </div>
+        </header>
+
+        <main id="main" tabIndex={-1}>
+          {route.view === 'uwanja' && <Playground lang={lang} code={code} onChange={setCode} />}
+          {route.view === 'masomo' && <Lessons lang={lang} lessonId={route.lessonId} onOpenLesson={(id) => go(`#/masomo/${id}`)} progress={progress} onComplete={onComplete} />}
+          {route.view === 'mazoezi' && <Practice lang={lang} />}
+          {route.view === 'kamusi' && (
+            <Dictionary
+              lang={lang}
+              onTry={(word) => {
+                setCode(KEYWORD_EXAMPLES[word.sw] || `${word.sw}\n`)
+                go('#/')
+              }}
+            />
+          )}
+        </main>
+
+        <aside className="jina" aria-label={t('Jina la kanga: methali', 'The kanga’s proverb line')}>
+          <p className="jina-label">{t('Jina la kanga hii', 'This kanga’s proverb')}</p>
+          <p className="jina-text" lang="sw">
+            {proverb}
+          </p>
+          <p className="jina-gloss" lang="en">
+            {gloss}
+          </p>
+        </aside>
+
+        {route.view === 'uwanja' && (
+          <OptionalPanel
+            lang={lang}
+            backendUp={backendUp}
+            code={code}
+            onUseCode={(text) => {
+              setCode(text)
+              window.scrollTo(0, 0)
+            }}
+          />
+        )}
+
+        <footer className="foot">
+          <p>
+            {t(
+              'Msimbo huendeshwa ndani ya kivinjari chako kwa Pyodide; hakuna kinachotumwa kwa seva. Hakuna akaunti: maendeleo ya masomo huhifadhiwa kwenye kifaa hiki tu.',
+              'Code runs inside your browser with Pyodide; nothing is sent to a server. There are no accounts: lesson progress is kept on this device only.',
+            )}
+          </p>
+          <p>
+            {t('Jedwali la maneno limetoka kwa ', 'The keyword table comes from ')}
+            <a href="https://github.com/Kalebu/pyswahili">pyswahili</a>
+            {t(' ya Jordan Kalebu (leseni ya MIT). ', ' by Jordan Kalebu (MIT licence). ')}
+            <a href="https://github.com/NathanKagoro/Swahili-ide">{t('Chanzo cha tovuti hii', 'Source for this site')}</a>
+          </p>
+        </footer>
+      </div>
+    </div>
   )
 }

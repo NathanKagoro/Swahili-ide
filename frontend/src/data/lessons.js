@@ -1,52 +1,7 @@
-export const swahiliDictionary = [
-  ['tupu', 'None'],
-  ['Kweli', 'True'],
-  ['SiKweli', 'False'],
-  ['vunja', 'break'],
-  ['endelea', 'continue'],
-  ['rudisha', 'return'],
-  ['ingiza', 'input'],
-  ['kama', 'if'],
-  ['pia', 'elif'],
-  ['ikiwa', 'for'],
-  ['katiya', 'range'],
-  ['imo', 'in'],
-  ['wakati', 'while'],
-  ['andika', 'print'],
-  ['zaidi', 'else'],
-  ['njia', 'def'],
-  ['pamoja', 'with'],
-  ['darasa', 'class'],
-  ['futa', 'del'],
-  ['kutoka', 'from'],
-  ['sio', 'not'],
-  ['ni', 'is'],
-  ['au', 'or'],
-  ['na', 'and'],
-  ['neno', 'str'],
-  ['orodha', 'list'],
-  ['kamusi', 'dict'],
-  ['jaribu', 'try'],
-  ['ila', 'except'],
-  ['ndogo', 'min'],
-  ['kubwa', 'max'],
-  ['aina', 'type'],
-  ['orodhesha', 'enumerate'],
-  ['jumlisha', 'sum'],
-  ['urefu', 'len'],
-  ['unganisha', 'zip'],
-  ['panga', 'sorted'],
-  ['yoyote', 'any'],
-  ['yote', 'all'],
-  ['kamili', 'abs'],
-  ['karibia', 'round'],
-  ['badilisha', 'map'],
-  ['chuja', 'filter'],
-  ['kinyume', 'reversed'],
-  ['seti', 'set'],
-  ['fungu', 'tuple'],
-  ['niaina', 'isinstance'],
-]
+import { KEYWORDS } from '../lib/keywords.js'
+
+// [Swahili word, Python word] pairs, derived from the one keyword table.
+export const swahiliDictionary = KEYWORDS.map((k) => [k.sw, k.en])
 
 export const lessons = [
   {
@@ -375,7 +330,7 @@ export const lessons = [
     titleEn: 'Loops: for',
     titleSw: 'Marudio: ikiwa',
     summaryEn: 'Iterate over a list or range using for loops.',
-    summarySw: 'Marudio hutumiwa kurudia kazi; hapa tunatumia ikiwa kupita vipengele vya orodha au range.',
+    summarySw: 'Marudio hutumiwa kurudia kazi; hapa tunatumia ikiwa kupita vipengele vya orodha au katiya.',
     example: {
       titleEn: 'Loop Through List',
       titleSw: 'Pitia Orodha',
@@ -383,10 +338,10 @@ export const lessons = [
       codeSw: 'magari = ["bmw", "toyota"]\nikiwa gari imo magari:\n    andika(gari)',
     },
     test: {
-      promptEn: 'Use for range(3) to print 0, 1, 2.',
-      promptSw: 'Tumia ikiwa katiya(3) kuchapisha 0, 1, 2.',
+      promptEn: 'Use for i in range(3) to print 0, 1, 2.',
+      promptSw: 'Tumia ikiwa i imo katiya(3) kuchapisha 0, 1, 2.',
       solutionEn: 'for i in range(3):\n    print(i)',
-      solutionSw: 'ikiwa i katiya(3):\n    andika(i)',
+      solutionSw: 'ikiwa i imo katiya(3):\n    andika(i)',
     },
   },
   {
@@ -403,10 +358,10 @@ export const lessons = [
       codeSw: 'njia salamu():\n    andika("Habari")\n\nsalamu()',
     },
     test: {
-      promptEn: 'Create a function show that prints ok.',
-      promptSw: 'Tengeneza njia inayoitwa onesha inayochapisha ok.',
-      solutionEn: 'def show():\n    print("ok")',
-      solutionSw: 'njia onesha():\n    andika("ok")',
+      promptEn: 'Create a function show that prints ok, then call it.',
+      promptSw: 'Tengeneza njia inayoitwa onesha inayochapisha ok, kisha uiite.',
+      solutionEn: 'def show():\n    print("ok")\n\nshow()',
+      solutionSw: 'njia onesha():\n    andika("ok")\n\nonesha()',
     },
   },
   {
@@ -653,7 +608,7 @@ export const lessonExplanations = {
     sw: [
       'Marudio hutumika kurudia kazi; ikiwa ni bora unapojua mfuatano unaotaka kupitia.',
       'Sintaksia ni ikiwa kipengele imo mfuatano: kisha mistari yenye indentation.',
-      'Badilisha range au orodha, endesha msimbo tena, halafu linganisha kila mstari wa jibu.',
+      'Badilisha katiya au orodha, endesha msimbo tena, halafu linganisha kila mstari wa jibu.',
     ],
   },
   njia: {
