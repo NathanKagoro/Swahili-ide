@@ -36,7 +36,7 @@ const og =
   `<rect x="${P - 8}" y="${P - 8}" width="${W - 2 * P + 16}" height="${H - 2 * P + 16}" fill="${DYE.cotton}"/>` +
   `<rect x="${P}" y="${P}" width="${W - 2 * P}" height="${H - 2 * P}" fill="${DYE.indigo}"/>` +
   `<rect x="${P}" y="${P}" width="${W - 2 * P}" height="20" fill="url(#b)"/>` +
-  `<text x="120" y="182" font-family="Rockwell Extra Bold, Rockwell, Georgia, serif" font-weight="800" font-size="64" fill="${DYE.cotton}">Andika Python kwa Kiswahili</text>` +
+  `<text x="120" y="182" font-family="Rockwell Extra Bold, Rockwell, Georgia, serif" font-weight="800" font-size="56" textLength="940" lengthAdjust="spacingAndGlyphs" fill="${DYE.cotton}">Andika Python kwa Kiswahili</text>` +
   // the mji
   `<rect x="111" y="213" width="978" height="178" fill="${DYE.madder}"/><rect x="114" y="216" width="972" height="172" fill="${DYE.ink}"/>` +
   `<rect x="117" y="219" width="966" height="166" fill="${DYE.turmeric}"/><rect x="120" y="222" width="960" height="160" fill="${DYE.ink}"/>` +

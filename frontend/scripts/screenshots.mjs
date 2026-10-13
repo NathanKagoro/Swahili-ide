@@ -34,6 +34,13 @@ try {
     for (const [name, hash] of PAGES) {
       await page.goto(`${url}${hash}`, { waitUntil: 'networkidle0' })
       await page.evaluate(() => document.fonts.ready)
+      // The editor lays out its line numbers when it first comes into view, as
+      // it does for a visitor who scrolls to it. Bring it into view once.
+      await page.evaluate(async () => {
+        document.querySelector('.editor')?.scrollIntoView()
+        await new Promise((done) => setTimeout(done, 300))
+        window.scrollTo(0, 0)
+      })
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth)
       if (overflow > 1) problems.push(`${width}px ${name}: scrolls sideways by ${overflow}px`)
       await page.screenshot({ path: join(outDir, `${name}-${width}.png`), fullPage: true })
