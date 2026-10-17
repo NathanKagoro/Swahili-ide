@@ -231,7 +231,7 @@ def _base_system_prompt(response_language: str) -> str:
         else ""
     )
     return (
-        "You are the assistant inside Swahili Voice IDE—a beginner-friendly coding environment. "
+        "You are the assistant inside Swahili Voice IDE, a beginner-friendly coding environment. "
         "Your only purpose is to help users learn Python and Pyswahili programming. "
         "Your scope is strictly limited to: explaining code, answering programming questions, debugging, "
         "generating coding examples, and teaching software concepts. "
